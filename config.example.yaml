@@ -1,0 +1,9 @@
+PORT: 8000
+GRPC_PORT: 8001
+API_DOMAIN: http://localhost:8000
+WEBSITE_DOMAIN: http://127.0.0.1:5173
+GIN_MODE: release
+DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
+GOOGLE:
+  CLIENT_ID: "dd3fd813-402e-4027-a6b2-68cf075598e7"
+  CLIENT_SECRET: "eeed1d35-cbe4-481a-94cd-edebd5b3847e"
