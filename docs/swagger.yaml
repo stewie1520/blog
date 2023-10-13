@@ -1,5 +1,18 @@
 basePath: /
 definitions:
+  api.LivenessResponse:
+    properties:
+      healthy:
+        type: boolean
+    type: object
+  api.ReadinessResponse:
+    properties:
+      database:
+        description: won't be shown if empty
+        type: string
+      healthy:
+        type: boolean
+    type: object
   user.RegisterCommand:
     properties:
       bio:
@@ -20,9 +33,37 @@ definitions:
     type: object
 info:
   contact: {}
-  title: ElasticPM API
+  title: Blog API
   version: "1.0"
 paths:
+  /health/live:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.LivenessResponse'
+      summary: Check if application is live
+      tags:
+      - health
+  /health/ready:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ReadinessResponse'
+      summary: Check if application is ready to serve traffic
+      tags:
+      - health
   /user/register:
     post:
       consumes:

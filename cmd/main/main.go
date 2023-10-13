@@ -18,7 +18,7 @@ func init() {
 	flag.Parse()
 }
 
-// @title ElasticPM API
+// @title Blog API
 // @version 1.0
 // @BasePath /
 func main() {

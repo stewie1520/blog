@@ -15,6 +15,50 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/health/live": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Check if application is live",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.LivenessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health/ready": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Check if application is ready to serve traffic",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ReadinessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "consumes": [
@@ -50,6 +94,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.LivenessResponse": {
+            "type": "object",
+            "properties": {
+                "healthy": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "api.ReadinessResponse": {
+            "type": "object",
+            "properties": {
+                "database": {
+                    "description": "won't be shown if empty",
+                    "type": "string"
+                },
+                "healthy": {
+                    "type": "boolean"
+                }
+            }
+        },
         "user.RegisterCommand": {
             "type": "object",
             "properties": {
@@ -87,7 +151,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "ElasticPM API",
+	Title:            "Blog API",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
