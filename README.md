@@ -1,11 +1,5 @@
 ## Getting Started 🎃
 
-Update submodules
-
-```
-git submodule update --init
-```
-
 ```sh
 docker-compose up -d
 cp ./config.example.yaml ./config.yaml
@@ -29,12 +23,17 @@ make watch
 
 To create a migration file, run
 ```sh
-make gen-migration name=<migration_file_name>
+make migrate-gen name=<migration_file_name>
 ```
 
 To run migration
 ```sh
-make migrate
+make migrate-up database="<database_url>"
+```
+
+To undo a migration
+```sh
+make migrate-down database="<database_url>" step=1
 ```
 
 We're using [golang-migrate](github.com/golang-migrate/migrate) underlying, please go check their documentation.
