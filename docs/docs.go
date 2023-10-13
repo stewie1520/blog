@@ -15,9 +15,8 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user/me": {
-            "get": {
-                "description": "Return current logged in user information",
+        "/user/register": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -25,14 +24,25 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "profile"
+                    "user"
                 ],
-                "summary": "Get current user information",
+                "summary": "Register new user",
+                "parameters": [
+                    {
+                        "description": "Register payload",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.RegisterCommand"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/usecases.GetUserByAccountIDResponse"
+                            "$ref": "#/definitions/user.RegisterResponse"
                         }
                     }
                 }
@@ -40,26 +50,31 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "types.DateTime": {
-            "type": "object"
-        },
-        "usecases.GetUserByAccountIDResponse": {
+        "user.RegisterCommand": {
             "type": "object",
             "properties": {
-                "accountId": {
+                "bio": {
                     "type": "string"
                 },
-                "createdAt": {
-                    "$ref": "#/definitions/types.DateTime"
+                "email": {
+                    "type": "string"
                 },
                 "fullName": {
                     "type": "string"
                 },
-                "id": {
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.RegisterResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
                     "type": "string"
                 },
-                "updatedAt": {
-                    "$ref": "#/definitions/types.DateTime"
+                "refreshToken": {
+                    "type": "string"
                 }
             }
         }

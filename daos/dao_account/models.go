@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.21.0
 
-package dao_user
+package dao_account
 
 import (
 	"database/sql"

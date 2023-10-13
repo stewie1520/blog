@@ -1,4 +1,4 @@
-package usecases
+package user
 
 import (
 	"context"
@@ -8,9 +8,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/stewie1520/blog/core"
 	"github.com/stewie1520/blog/daos/dao_user"
+	"github.com/stewie1520/blog/usecases"
 )
 
-var _ Query[dao_user.User] = (*GetUserQuery)(nil)
+var _ usecases.Query[dao_user.User] = (*GetUserQuery)(nil)
 
 func NewGetUserQuery(app core.App) *GetUserQuery {
 	return &GetUserQuery{

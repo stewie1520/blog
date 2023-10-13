@@ -10,42 +10,41 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
-	"github.com/stewie1520/blog/tools/types"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO "users" ("id", "fullName", "accountId", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5) RETURNING id, "fullName", "accountId", "createdAt", "updatedAt"
+INSERT INTO "users" ("id", "full_name", "account_id", "bio") VALUES ($1, $2, $3, $4) RETURNING id, account_id, full_name, bio, created_at, updated_at, deleted_at
 `
 
 type CreateUserParams struct {
 	ID        uuid.UUID      `json:"id"`
-	FullName  sql.NullString `json:"fullName"`
-	AccountId string         `json:"accountId"`
-	CreatedAt types.DateTime `json:"createdAt"`
-	UpdatedAt types.DateTime `json:"updatedAt"`
+	FullName  string         `json:"full_name"`
+	AccountID uuid.UUID      `json:"account_id"`
+	Bio       sql.NullString `json:"bio"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser,
 		arg.ID,
 		arg.FullName,
-		arg.AccountId,
-		arg.CreatedAt,
-		arg.UpdatedAt,
+		arg.AccountID,
+		arg.Bio,
 	)
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.AccountID,
 		&i.FullName,
-		&i.AccountId,
+		&i.Bio,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const findUserById = `-- name: FindUserById :one
-SELECT id, "fullName", "accountId", "createdAt", "updatedAt" FROM "users" WHERE "users"."id" = $1 LIMIT 1
+SELECT id, account_id, full_name, bio, created_at, updated_at, deleted_at FROM "users" WHERE "users"."id" = $1 LIMIT 1
 `
 
 func (q *Queries) FindUserById(ctx context.Context, id uuid.UUID) (User, error) {
@@ -53,27 +52,31 @@ func (q *Queries) FindUserById(ctx context.Context, id uuid.UUID) (User, error) 
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.AccountID,
 		&i.FullName,
-		&i.AccountId,
+		&i.Bio,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const getUserByAccountID = `-- name: GetUserByAccountID :one
-SELECT id, "fullName", "accountId", "createdAt", "updatedAt" FROM "users" WHERE "users"."accountId" = $1 LIMIT 1
+SELECT id, account_id, full_name, bio, created_at, updated_at, deleted_at FROM "users" WHERE "users"."account_id" = $1 LIMIT 1
 `
 
-func (q *Queries) GetUserByAccountID(ctx context.Context, accountid string) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByAccountID, accountid)
+func (q *Queries) GetUserByAccountID(ctx context.Context, accountID uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByAccountID, accountID)
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.AccountID,
 		&i.FullName,
-		&i.AccountId,
+		&i.Bio,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }

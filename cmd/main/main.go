@@ -8,7 +8,6 @@ import (
 	"github.com/stewie1520/blog/config"
 	"github.com/stewie1520/blog/core"
 	docs "github.com/stewie1520/blog/docs"
-	"github.com/stewie1520/blog/usecases"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -33,8 +32,6 @@ func main() {
 
 	err = app.Bootstrap()
 	panicIfError(err)
-
-	usecases.AddHandlersToHook(app)
 
 	router, err := api.InitApi(app)
 	panicIfError(err)

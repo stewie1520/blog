@@ -4,6 +4,8 @@ API_DOMAIN: http://localhost:8000
 WEBSITE_DOMAIN: http://127.0.0.1:5173
 GIN_MODE: release
 DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
-GOOGLE:
-  CLIENT_ID: "dd3fd813-402e-4027-a6b2-68cf075598e7"
-  CLIENT_SECRET: "eeed1d35-cbe4-481a-94cd-edebd5b3847e"
+TOKEN:
+  PRIVATE_KEY: "abc"
+  PUBLIC_KEY: "abc"
+  REFRESH_TOKEN_TTL: 604800
+  ACCESS_TOKEN_TTL: 3600

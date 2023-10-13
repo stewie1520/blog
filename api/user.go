@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stewie1520/blog/api/response"
 	"github.com/stewie1520/blog/core"
-	"github.com/stewie1520/blog/usecases"
+	usecases_user "github.com/stewie1520/blog/usecases/user"
 )
 
 type userApi struct {
@@ -19,24 +19,28 @@ func bindUserApi(app core.App, ginEngine *gin.Engine) {
 	}
 
 	subGroup := ginEngine.Group("/user")
-	subGroup.GET("/me", api.getCurrentUserInfo)
+	subGroup.POST("/register", api.register)
 }
 
-// getCurrentUserInfo Return current logged in user information
-// @Summary Get current user information
-// @Description Return current logged in user information
-// @Tags profile
+// register Register new user
+// @Summary Register new user
+// @Tags user
 // @Accept json
 // @Produce json
-// @Success 200 {object} usecases.GetUserByAccountIDResponse
-// @Router /user/me [get]
-func (api *userApi) getCurrentUserInfo(c *gin.Context) {
-	q := usecases.NewGetUserByAccountIDQuery(api.app)
-	q.AccountID = "123" // TODO: implement this
+// @Param user body usecases_user.RegisterCommand true "Register payload"
+// @Success 200 {object} usecases_user.RegisterResponse
+// @Router /user/register [post]
+func (api *userApi) register(c *gin.Context) {
+	cmd := usecases_user.NewRegisterCommand(api.app)
 
-	if user, err := q.Execute(); err != nil {
+	if err := c.ShouldBindJSON(cmd); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+		return
+	}
+
+	if res, err := cmd.Execute(); err != nil {
 		response.NewBadRequestError("", err).WithGin(c)
 	} else {
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusCreated, res)
 	}
 }

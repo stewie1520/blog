@@ -3,6 +3,7 @@ package daos
 import (
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/stewie1520/blog/daos/dao_account"
 	"github.com/stewie1520/blog/daos/dao_user"
 )
 
@@ -11,12 +12,14 @@ type Dao struct {
 
 	Builder squirrel.StatementBuilderType
 	User    *dao_user.Queries
+	Account *dao_account.Queries
 }
 
 func New(db *pgxpool.Pool) *Dao {
 	return &Dao{
 		db:      db,
 		User:    dao_user.New(db),
+		Account: dao_account.New(db),
 		Builder: squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),
 	}
 }

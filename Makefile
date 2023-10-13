@@ -28,13 +28,17 @@ debug: ### Debug the main app, you need to attach the client to port 2345
 watch: ### Run make build to build the binary file and run it, will restart on file change
 	air
 
-# .PHONY: migrate
-# migrate: ### Run the migration
-# 	CGO_ENABLED=0 go run -tags migrate github.com/stewie1520/blog/cmd/migrate
+.PHONY: migrate-up
+migrate-up: ### Run the migration
+	migrate -database $(database) -path ./${MIGRATION_DIR_PATH} up
 
-# .PHONY: gen-migration
-# gen-migration: ### Generate a new migration file
-# 	migrate create -ext sql -dir ./${MIGRATION_DIR_PATH} -seq $(name)
+.PHONY: migrate-down
+migrate-down: ### Revert the migration
+	migrate -database $(database) -path ./${MIGRATION_DIR_PATH} down $(step)
+
+.PHONY: migrate-gen
+migrate-gen: ### Generate a new migration file
+	migrate create -ext sql -dir ./${MIGRATION_DIR_PATH} -seq $(name)
 
 .PHONY: gen-sqlc
 gen-sqlc: ### Generate sqlc
@@ -53,6 +57,10 @@ linter-golangci: ### check by golangci linter
 .PHONY: swag-init
 swag-init: ### Generate swagger documentation
 	swag init -dir ./cmd/main/,./api -parseDependency -parseInternal
+
+.PHONE: gen-keys
+gen-keys: ### Generate private key and public key
+	 go run -tags paseto_gen_key github.com/stewie1520/blog/cmd/gen_keys
 
 bin-deps:
 	GOBIN=$(LOCAL_BIN) go install github.com/go-delve/delve/cmd/dlv@latest
