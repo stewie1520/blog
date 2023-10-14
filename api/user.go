@@ -7,6 +7,7 @@ import (
 	"github.com/stewie1520/blog/api/middleware"
 	"github.com/stewie1520/blog/api/response"
 	"github.com/stewie1520/blog/core"
+	"github.com/stewie1520/blog/usecases"
 	usecases_user "github.com/stewie1520/blog/usecases/user"
 )
 
@@ -21,6 +22,7 @@ func bindUserApi(app core.App, ginEngine *gin.Engine) {
 
 	subGroup := ginEngine.Group("/user")
 	subGroup.POST("/register", api.register)
+	subGroup.POST("/login", api.login)
 
 	subGroup.Use(middleware.RequireAuth(app))
 
@@ -33,7 +35,7 @@ func bindUserApi(app core.App, ginEngine *gin.Engine) {
 // @Accept json
 // @Produce json
 // @Param user body usecases_user.RegisterCommand true "Register payload"
-// @Success 200 {object} usecases_user.RegisterResponse
+// @Success 200 {object} usecases_user.TokensResponse
 // @Router /user/register [post]
 func (api *userApi) register(c *gin.Context) {
 	cmd := usecases_user.NewRegisterCommand(api.app)
@@ -48,6 +50,37 @@ func (api *userApi) register(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusCreated, res)
 	}
+}
+
+// login Login
+// @Summary Login
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param user body usecases_user.LoginCommand true "Login payload"
+// @Success 200 {object} usecases_user.TokensResponse
+// @Router /user/login [post]
+func (api *userApi) login(c *gin.Context) {
+	cmd := usecases_user.NewLoginCommand(api.app)
+
+	if err := c.ShouldBindJSON(cmd); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+		return
+	}
+
+	res, err := cmd.Execute()
+
+	if err == usecases.ErrInvalidCredentials {
+		response.NewBadRequestError("Failed to authenticate", err).WithGin(c)
+		return
+	}
+
+	if err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+		return
+	}
+
+	c.JSON(http.StatusCreated, res)
 }
 
 // me Get current user

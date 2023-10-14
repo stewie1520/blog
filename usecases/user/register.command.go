@@ -16,7 +16,7 @@ import (
 	"github.com/stewie1520/blog/usecases"
 )
 
-var _ usecases.Command[*RegisterResponse] = (*RegisterCommand)(nil)
+var _ usecases.Command[*TokensResponse] = (*RegisterCommand)(nil)
 
 type RegisterCommand struct {
 	app        core.App
@@ -27,11 +27,6 @@ type RegisterCommand struct {
 	Password string `json:"password"`
 	FullName string `json:"fullName"`
 	Bio      string `json:"bio"`
-}
-
-type RegisterResponse struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
 }
 
 func NewRegisterCommand(app core.App) *RegisterCommand {
@@ -50,7 +45,7 @@ func (cmd *RegisterCommand) Validate() error {
 	)
 }
 
-func (cmd *RegisterCommand) Execute() (*RegisterResponse, error) {
+func (cmd *RegisterCommand) Execute() (*TokensResponse, error) {
 	if err := cmd.Validate(); err != nil {
 		return nil, err
 	}
@@ -97,7 +92,7 @@ func (cmd *RegisterCommand) Execute() (*RegisterResponse, error) {
 	return createTokens(cmd.app.Config(), dbUser.ID.String(), dbAccount.ID.String())
 }
 
-func createTokens(config *config.Config, userId string, accountId string) (*RegisterResponse, error) {
+func createTokens(config *config.Config, userId string, accountId string) (*TokensResponse, error) {
 	accessToken, err := securities.NewPaseto(map[string]string{
 		"userId":    userId,
 		"accountId": accountId,
@@ -124,7 +119,7 @@ func createTokens(config *config.Config, userId string, accountId string) (*Regi
 		return nil, err
 	}
 
-	return &RegisterResponse{
+	return &TokensResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil

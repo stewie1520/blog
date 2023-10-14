@@ -34,3 +34,21 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 	)
 	return i, err
 }
+
+const findByEmail = `-- name: FindByEmail :one
+SELECT id, email, password, created_at, updated_at, deleted_at FROM "accounts" WHERE "email" = $1 LIMIT 1
+`
+
+func (q *Queries) FindByEmail(ctx context.Context, email string) (Account, error) {
+	row := q.db.QueryRow(ctx, findByEmail, email)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}

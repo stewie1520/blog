@@ -13,6 +13,13 @@ definitions:
       healthy:
         type: boolean
     type: object
+  user.LoginCommand:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   user.RegisterCommand:
     properties:
       bio:
@@ -24,7 +31,7 @@ definitions:
       password:
         type: string
     type: object
-  user.RegisterResponse:
+  user.TokensResponse:
     properties:
       accessToken:
         type: string
@@ -64,6 +71,27 @@ paths:
       summary: Check if application is ready to serve traffic
       tags:
       - health
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.TokensResponse'
+      summary: Login
+      tags:
+      - user
   /user/me:
     get:
       consumes:
@@ -95,7 +123,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.RegisterResponse'
+            $ref: '#/definitions/user.TokensResponse'
       summary: Register new user
       tags:
       - user

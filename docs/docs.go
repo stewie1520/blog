@@ -59,6 +59,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Login payload",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.LoginCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.TokensResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/me": {
             "get": {
                 "security": [
@@ -110,7 +143,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.RegisterResponse"
+                            "$ref": "#/definitions/user.TokensResponse"
                         }
                     }
                 }
@@ -138,6 +171,17 @@ const docTemplate = `{
                 }
             }
         },
+        "user.LoginCommand": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "user.RegisterCommand": {
             "type": "object",
             "properties": {
@@ -155,7 +199,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.RegisterResponse": {
+        "user.TokensResponse": {
             "type": "object",
             "properties": {
                 "accessToken": {
