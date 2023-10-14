@@ -4,11 +4,13 @@ package response
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-playground/validator/v10"
 )
 
 type ApiError struct {
@@ -79,6 +81,9 @@ func safeErrorsData(data any) map[string]any {
 		return resolveSafeErrorsData[error](v)
 	case map[string]any:
 		return resolveSafeErrorsData[any](v)
+	// gin use validator underlyings for binding errors
+	case validator.ValidationErrors:
+		return resolveSafeErrorsDataBinding(v)
 	default:
 		return map[string]any{} // not nil to ensure that is json serialized as object
 	}
@@ -93,6 +98,16 @@ func resolveSafeErrorsData[T any](data map[string]T) map[string]any {
 			continue
 		}
 		result[name] = resolveSafeErrorItem(err)
+	}
+
+	return result
+}
+
+func resolveSafeErrorsDataBinding(data validator.ValidationErrors) map[string]any {
+	result := map[string]any{}
+
+	for _, err := range data {
+		result[err.Field()] = resolveSafeErrorItem(err)
 	}
 
 	return result
@@ -118,6 +133,10 @@ func resolveSafeErrorItem(err any) map[string]string {
 	if obj, ok := err.(validation.Error); ok {
 		code = obj.Code()
 		msg = obj.Error()
+	}
+
+	if obj, ok := err.(validator.FieldError); ok {
+		msg = fmt.Sprintf("field %s is invalid because of the %s tag", obj.Field(), obj.Tag())
 	}
 
 	return map[string]string{

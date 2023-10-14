@@ -23,8 +23,7 @@ func InitApi(app core.App) (*gin.Engine, error) {
 	engine.Use(middleware.LoadAuthContext(app))
 
 	bindUserApi(app, engine)
-
-	// TODO: add more api group here
+	bindPostApi(app, engine)
 
 	return engine, nil
 }

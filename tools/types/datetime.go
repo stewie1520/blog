@@ -53,6 +53,10 @@ func (d DateTime) String() string {
 
 // MarshalJSON implements the [json.Marshaler] interface.
 func (d DateTime) MarshalJSON() ([]byte, error) {
+	if d.String() == "" {
+		return []byte("null"), nil
+	}
+
 	return []byte(`"` + d.String() + `"`), nil
 }
 

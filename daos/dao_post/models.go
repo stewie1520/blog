@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.21.0
 
-package dao_user
+package dao_post
 
 import (
 	"github.com/google/uuid"

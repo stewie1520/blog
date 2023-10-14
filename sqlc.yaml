@@ -12,6 +12,9 @@ sql:
         overrides: &defaults_overrides
           - db_type: "pg_catalog.timestamptz"
             go_type: "github.com/stewie1520/blog/tools/types.DateTime"
+          - db_type: "pg_catalog.timestamptz"
+            go_type: "github.com/stewie1520/blog/tools/types.DateTime"
+            nullable: true
           - db_type: "uuid"
             go_type: "github.com/google/uuid.UUID"
           - db_type: "uuid"
@@ -53,6 +56,16 @@ sql:
       go:
         package: "dao_account"
         out: "daos/dao_account"
+        emit_json_tags: true
+        sql_package: "pgx/v5"
+        overrides: *defaults_overrides
+  - engine: "postgresql"
+    queries: "daos/queries/post.query.sql"
+    schema: "db/migrations"
+    gen:
+      go:
+        package: "dao_post"
+        out: "daos/dao_post"
         emit_json_tags: true
         sql_package: "pgx/v5"
         overrides: *defaults_overrides

@@ -6,17 +6,25 @@ package dao_account
 
 import (
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/stewie1520/blog/tools/types"
 )
 
 type Account struct {
-	ID        uuid.UUID        `json:"id"`
-	Email     string           `json:"email"`
-	Password  string           `json:"password"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-	DeletedAt pgtype.Timestamp `json:"deleted_at"`
+	ID        uuid.UUID      `json:"id"`
+	Email     string         `json:"email"`
+	Password  string         `json:"password"`
+	CreatedAt types.DateTime `json:"created_at"`
+	UpdatedAt types.DateTime `json:"updated_at"`
+	DeletedAt types.DateTime `json:"deleted_at"`
+}
+
+type Post struct {
+	ID        uuid.UUID      `json:"id"`
+	Content   string         `json:"content"`
+	UserID    uuid.UUID      `json:"user_id"`
+	CreatedAt types.DateTime `json:"created_at"`
+	UpdatedAt types.DateTime `json:"updated_at"`
+	DeletedAt types.DateTime `json:"deleted_at"`
 }
 
 type User struct {
@@ -24,7 +32,7 @@ type User struct {
 	AccountID uuid.UUID        `json:"account_id"`
 	FullName  string           `json:"full_name"`
 	Bio       types.NullString `json:"bio"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-	DeletedAt pgtype.Timestamp `json:"deleted_at"`
+	CreatedAt types.DateTime   `json:"created_at"`
+	UpdatedAt types.DateTime   `json:"updated_at"`
+	DeletedAt types.DateTime   `json:"deleted_at"`
 }

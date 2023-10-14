@@ -54,8 +54,8 @@ gen-grpc: ### Generate grpc
 linter-golangci: ### check by golangci linter
 	golangci-lint run
 
-.PHONY: swag-init
-swag-init: ### Generate swagger documentation
+.PHONY: gen-swagger
+gen-swagger: ### Generate swagger documentation
 	swag init -dir ./cmd/main/,./api -parseDependency -parseInternal
 
 .PHONE: gen-keys
