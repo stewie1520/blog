@@ -7,9 +7,9 @@ package dao_user
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
+	"github.com/stewie1520/blog/tools/types"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -17,10 +17,10 @@ INSERT INTO "users" ("id", "full_name", "account_id", "bio") VALUES ($1, $2, $3,
 `
 
 type CreateUserParams struct {
-	ID        uuid.UUID      `json:"id"`
-	FullName  string         `json:"full_name"`
-	AccountID uuid.UUID      `json:"account_id"`
-	Bio       sql.NullString `json:"bio"`
+	ID        uuid.UUID        `json:"id"`
+	FullName  string           `json:"full_name"`
+	AccountID uuid.UUID        `json:"account_id"`
+	Bio       types.NullString `json:"bio"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {

@@ -5,10 +5,9 @@
 package dao_user
 
 import (
-	"database/sql"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/stewie1520/blog/tools/types"
 )
 
 type Account struct {
@@ -24,7 +23,7 @@ type User struct {
 	ID        uuid.UUID        `json:"id"`
 	AccountID uuid.UUID        `json:"account_id"`
 	FullName  string           `json:"full_name"`
-	Bio       sql.NullString   `json:"bio"`
+	Bio       types.NullString `json:"bio"`
 	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 	DeletedAt pgtype.Timestamp `json:"deleted_at"`

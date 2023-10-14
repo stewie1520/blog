@@ -30,10 +30,10 @@ sql:
             go_type: "database/sql.NullInt64"
             nullable: true
           - db_type: "pg_catalog.varchar"
-            go_type: "database/sql.NullString"
+            go_type: "github.com/stewie1520/blog/tools/types.NullString"
             nullable: true
           - db_type: "text"
-            go_type: "database/sql.NullString"
+            go_type: "github.com/stewie1520/blog/tools/types.NullString"
             nullable: true
           - db_type: "pg_catalog.interval"
             go_type: "time.Duration"

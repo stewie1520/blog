@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"database/sql"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
@@ -13,6 +12,7 @@ import (
 	"github.com/stewie1520/blog/daos/dao_account"
 	"github.com/stewie1520/blog/daos/dao_user"
 	"github.com/stewie1520/blog/tools/securities"
+	"github.com/stewie1520/blog/tools/types"
 	"github.com/stewie1520/blog/usecases"
 )
 
@@ -85,7 +85,7 @@ func (cmd *RegisterCommand) Execute() (*RegisterResponse, error) {
 		ID:        uuid.New(),
 		FullName:  cmd.FullName,
 		AccountID: dbAccount.ID,
-		Bio:       sql.NullString{Valid: true, String: cmd.Bio},
+		Bio:       types.NewNullString(&cmd.Bio),
 	})
 
 	if err != nil {

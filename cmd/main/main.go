@@ -21,6 +21,9 @@ func init() {
 // @title Blog API
 // @version 1.0
 // @BasePath /
+// @securityDefinitions.apikey Authorization
+// @in header
+// @name Authorization
 func main() {
 	cfg, err := config.Init()
 	panicIfError(err)

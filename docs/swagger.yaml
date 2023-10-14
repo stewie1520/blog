@@ -64,6 +64,20 @@ paths:
       summary: Check if application is ready to serve traffic
       tags:
       - health
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - Authorization: []
+      summary: Get current user
+      tags:
+      - user
   /user/register:
     post:
       consumes:
@@ -85,4 +99,9 @@ paths:
       summary: Register new user
       tags:
       - user
+securityDefinitions:
+  Authorization:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

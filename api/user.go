@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stewie1520/blog/api/middleware"
 	"github.com/stewie1520/blog/api/response"
 	"github.com/stewie1520/blog/core"
 	usecases_user "github.com/stewie1520/blog/usecases/user"
@@ -20,6 +21,10 @@ func bindUserApi(app core.App, ginEngine *gin.Engine) {
 
 	subGroup := ginEngine.Group("/user")
 	subGroup.POST("/register", api.register)
+
+	subGroup.Use(middleware.RequireAuth(app))
+
+	subGroup.GET("/me", api.me)
 }
 
 // register Register new user
@@ -43,4 +48,16 @@ func (api *userApi) register(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusCreated, res)
 	}
+}
+
+// me Get current user
+// @Summary Get current user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /user/me [get]
+// @Security Authorization
+func (apo *userApi) me(c *gin.Context) {
+	c.JSON(http.StatusOK, getUserFromContext(c))
 }
