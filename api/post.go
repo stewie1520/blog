@@ -24,7 +24,8 @@ func bindPostApi(app core.App, ginEngine *gin.Engine) {
 	subGroup.Use(middleware.RequireAuth(app))
 	subGroup.POST("/", api.create)
 	subGroup.GET("/", api.list)
-
+	subGroup.PUT("/:id", api.update)
+	subGroup.DELETE("/:id", api.remove)
 }
 
 // create create new post
@@ -47,7 +48,7 @@ func (api *postApi) create(c *gin.Context) {
 	user := getUserFromContext(c)
 	cmd.UserID = user.ID.String()
 
-	if res, err := cmd.Execute(); err != nil {
+	if res, err := cmd.Execute(c); err != nil {
 		response.NewBadRequestError("", err).WithGin(c)
 	} else {
 		c.JSON(http.StatusCreated, res)
@@ -73,7 +74,64 @@ func (api *postApi) list(c *gin.Context) {
 
 	q.UserID = getUserFromContext(c).ID.String()
 
-	if res, err := q.Execute(); err != nil {
+	if res, err := q.Execute(c); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+	} else {
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+// update update content of a post
+// @Summary Update content of a post
+// @Tags post
+// @Accept json
+// @Produce json
+// @Param post body usecases_post.UpdatePostCommand true "post"
+// @Param id path string true "post id"
+// @Success 200 {object} usecases_post.UpdatePostResponse
+// @Security Authorization
+// @Router /post/{id} [put]
+func (api *postApi) update(c *gin.Context) {
+	cmd := usecases_post.NewUpdatePostCommand(api.app)
+
+	if err := c.ShouldBindUri(cmd); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+		return
+	}
+
+	if err := c.ShouldBindJSON(cmd); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+		return
+	}
+
+	cmd.UserID = getUserFromContext(c).ID.String()
+
+	if res, err := cmd.Execute(c); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+	} else {
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+// remove remove a post
+// @Summary remove a post
+// @Tags post
+// @Accept json
+// @Produce json
+// @Param id path string true "post id"
+// @Success 200 {object} usecases_post.RemovePostResponse
+// @Security Authorization
+// @Router /post/{id} [delete]
+func (api *postApi) remove(c *gin.Context) {
+	cmd := usecases_post.NewRemovePostCommand(api.app)
+	if err := c.ShouldBindUri(cmd); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+		return
+	}
+
+	cmd.UserID = getUserFromContext(c).ID.String()
+
+	if res, err := cmd.Execute(c); err != nil {
 		response.NewBadRequestError("", err).WithGin(c)
 	} else {
 		c.JSON(http.StatusOK, res)

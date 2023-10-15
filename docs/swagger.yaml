@@ -48,6 +48,31 @@ definitions:
       user_id:
         type: string
     type: object
+  post.RemovePostResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  post.UpdatePostCommand:
+    properties:
+      content:
+        type: string
+    type: object
+  post.UpdatePostResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        $ref: '#/definitions/types.DateTime'
+      deleted_at:
+        $ref: '#/definitions/types.DateTime'
+      id:
+        type: string
+      updated_at:
+        $ref: '#/definitions/types.DateTime'
+      user_id:
+        type: string
+    type: object
   types.DateTime:
     type: object
   types.Pagination-dao_post_Post:
@@ -129,9 +154,11 @@ paths:
       - application/json
       parameters:
       - in: query
+        maximum: 100
         name: limit
         type: integer
       - in: query
+        minimum: 0
         name: offset
         type: integer
       produces:
@@ -166,6 +193,55 @@ paths:
       security:
       - Authorization: []
       summary: Create new post
+      tags:
+      - post
+  /post/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/post.RemovePostResponse'
+      security:
+      - Authorization: []
+      summary: remove a post
+      tags:
+      - post
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: post
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/post.UpdatePostCommand'
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/post.UpdatePostResponse'
+      security:
+      - Authorization: []
+      summary: Update content of a post
       tags:
       - post
   /user/login:

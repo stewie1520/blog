@@ -46,6 +46,24 @@ func (q *Queries) Create(ctx context.Context, arg CreateParams) (Post, error) {
 	return i, err
 }
 
+const findById = `-- name: FindById :one
+SELECT id, content, user_id, created_at, updated_at, deleted_at FROM "posts" WHERE "posts"."id" = $1 LIMIT 1
+`
+
+func (q *Queries) FindById(ctx context.Context, id uuid.UUID) (Post, error) {
+	row := q.db.QueryRow(ctx, findById, id)
+	var i Post
+	err := row.Scan(
+		&i.ID,
+		&i.Content,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const listByUserId = `-- name: ListByUserId :many
 SELECT id, content, user_id, created_at, updated_at, deleted_at FROM "posts" WHERE "posts"."user_id" = $1 ORDER BY "posts"."created_at" DESC LIMIT $2 OFFSET $3
 `
@@ -81,4 +99,27 @@ func (q *Queries) ListByUserId(ctx context.Context, arg ListByUserIdParams) ([]P
 		return nil, err
 	}
 	return items, nil
+}
+
+const removePost = `-- name: RemovePost :exec
+UPDATE "posts" SET "deleted_at" = now() WHERE "id" = $1
+`
+
+func (q *Queries) RemovePost(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, removePost, id)
+	return err
+}
+
+const updatePost = `-- name: UpdatePost :exec
+UPDATE "posts" SET "content" = $2, "updated_at" = now() WHERE "id" = $1
+`
+
+type UpdatePostParams struct {
+	ID      uuid.UUID `json:"id"`
+	Content string    `json:"content"`
+}
+
+func (q *Queries) UpdatePost(ctx context.Context, arg UpdatePostParams) error {
+	_, err := q.db.Exec(ctx, updatePost, arg.ID, arg.Content)
+	return err
 }

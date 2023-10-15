@@ -27,19 +27,19 @@ type GetUserQuery struct {
 	ID string `json:"id"`
 }
 
-// Execute implements Query.
-func (q *GetUserQuery) Execute() (dao_user.User, error) {
-	if err := q.Validate(); err != nil {
-		return dao_user.User{}, err
-	}
-
-	user, err := q.dao.FindUserById(context.Background(), uuid.MustParse(q.ID))
-	return user, err
-}
-
 // Validate implements Query.
 func (q *GetUserQuery) Validate() error {
 	return validation.ValidateStruct(q,
 		validation.Field(&q.ID, validation.Required, is.UUIDv4),
 	)
+}
+
+// Execute implements Query.
+func (q *GetUserQuery) Execute(ctx context.Context) (dao_user.User, error) {
+	if err := q.Validate(); err != nil {
+		return dao_user.User{}, err
+	}
+
+	user, err := q.dao.FindUserById(ctx, uuid.MustParse(q.ID))
+	return user, err
 }

@@ -45,7 +45,7 @@ func (api *userApi) register(c *gin.Context) {
 		return
 	}
 
-	if res, err := cmd.Execute(); err != nil {
+	if res, err := cmd.Execute(c); err != nil {
 		response.NewBadRequestError("", err).WithGin(c)
 	} else {
 		c.JSON(http.StatusCreated, res)
@@ -68,7 +68,7 @@ func (api *userApi) login(c *gin.Context) {
 		return
 	}
 
-	res, err := cmd.Execute()
+	res, err := cmd.Execute(c)
 
 	if err == usecases.ErrInvalidCredentials {
 		response.NewBadRequestError("Failed to authenticate", err).WithGin(c)

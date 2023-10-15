@@ -39,12 +39,12 @@ func (cmd *CreatePostCommand) Validate() error {
 	)
 }
 
-func (cmd *CreatePostCommand) Execute() (*CreatePostResponse, error) {
+func (cmd *CreatePostCommand) Execute(ctx context.Context) (*CreatePostResponse, error) {
 	if err := cmd.Validate(); err != nil {
 		return nil, err
 	}
 
-	newPost, err := cmd.daoPost.Create(context.Background(), dao_post.CreateParams{
+	newPost, err := cmd.daoPost.Create(ctx, dao_post.CreateParams{
 		ID:      uuid.New(),
 		Content: cmd.Content,
 		UserID:  uuid.MustParse(cmd.UserID),

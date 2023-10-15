@@ -40,12 +40,12 @@ func (cmd *LoginCommand) Validate() error {
 	)
 }
 
-func (cmd *LoginCommand) Execute() (*TokensResponse, error) {
+func (cmd *LoginCommand) Execute(ctx context.Context) (*TokensResponse, error) {
 	if err := cmd.Validate(); err != nil {
 		return nil, err
 	}
 
-	dbAccount, err := cmd.daoAccount.FindByEmail(context.Background(), cmd.Email)
+	dbAccount, err := cmd.daoAccount.FindByEmail(ctx, cmd.Email)
 
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, usecases.ErrInvalidCredentials
@@ -59,7 +59,7 @@ func (cmd *LoginCommand) Execute() (*TokensResponse, error) {
 		return nil, usecases.ErrInvalidCredentials
 	}
 
-	dbUser, err := cmd.daoUser.GetUserByAccountID(context.Background(), dbAccount.ID)
+	dbUser, err := cmd.daoUser.GetUserByAccountID(ctx, dbAccount.ID)
 
 	if err != nil {
 		return nil, err

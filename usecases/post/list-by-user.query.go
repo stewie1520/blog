@@ -38,8 +38,8 @@ func (q *ListByUserQuery) Validate() error {
 	)
 }
 
-func (q *ListByUserQuery) Execute() (*types.Pagination[dao_post.Post], error) {
-	posts, err := q.dao.ListByUserId(context.Background(), dao_post.ListByUserIdParams{
+func (q *ListByUserQuery) Execute(ctx context.Context) (*types.Pagination[dao_post.Post], error) {
+	posts, err := q.dao.ListByUserId(ctx, dao_post.ListByUserIdParams{
 		UserID: uuid.MustParse(q.UserID),
 		Limit:  int32(q.Limit),
 		Offset: int32(q.Offset),
@@ -49,7 +49,7 @@ func (q *ListByUserQuery) Execute() (*types.Pagination[dao_post.Post], error) {
 		return nil, err
 	}
 
-	total, err := q.dao.CountByUserId(context.Background(), uuid.MustParse(q.UserID))
+	total, err := q.dao.CountByUserId(ctx, uuid.MustParse(q.UserID))
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return nil, err
 	}

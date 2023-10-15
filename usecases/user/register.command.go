@@ -45,7 +45,7 @@ func (cmd *RegisterCommand) Validate() error {
 	)
 }
 
-func (cmd *RegisterCommand) Execute() (*TokensResponse, error) {
+func (cmd *RegisterCommand) Execute(ctx context.Context) (*TokensResponse, error) {
 	if err := cmd.Validate(); err != nil {
 		return nil, err
 	}
@@ -56,17 +56,17 @@ func (cmd *RegisterCommand) Execute() (*TokensResponse, error) {
 		cmd.Password = password
 	}
 
-	tx, err := cmd.app.DB().BeginTx(context.Background(), pgx.TxOptions{})
+	tx, err := cmd.app.DB().BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	defer tx.Rollback(context.Background())
+	defer tx.Rollback(ctx)
 
 	daoAccountTx := cmd.daoAccount.WithTx(tx)
 	daoUserTx := cmd.daoUser.WithTx(tx)
 
-	dbAccount, err := daoAccountTx.CreateAccount(context.Background(), dao_account.CreateAccountParams{
+	dbAccount, err := daoAccountTx.CreateAccount(ctx, dao_account.CreateAccountParams{
 		ID:       uuid.New(),
 		Email:    cmd.Email,
 		Password: cmd.Password,
@@ -76,7 +76,7 @@ func (cmd *RegisterCommand) Execute() (*TokensResponse, error) {
 		return nil, err
 	}
 
-	dbUser, err := daoUserTx.CreateUser(context.Background(), dao_user.CreateUserParams{
+	dbUser, err := daoUserTx.CreateUser(ctx, dao_user.CreateUserParams{
 		ID:        uuid.New(),
 		FullName:  cmd.FullName,
 		AccountID: dbAccount.ID,
@@ -87,7 +87,7 @@ func (cmd *RegisterCommand) Execute() (*TokensResponse, error) {
 		return nil, err
 	}
 
-	tx.Commit(context.Background())
+	tx.Commit(ctx)
 
 	return createTokens(cmd.app.Config(), dbUser.ID.String(), dbAccount.ID.String())
 }
