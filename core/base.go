@@ -8,6 +8,8 @@ import (
 	"github.com/stewie1520/blog/daos"
 	"github.com/stewie1520/blog/db"
 	hook "github.com/stewie1520/blog/hooks"
+	"github.com/stewie1520/blog/log"
+	"go.uber.org/zap"
 )
 
 const (
@@ -27,6 +29,7 @@ type BaseAppConfig struct {
 type BaseApp struct {
 	config BaseAppConfig
 	dao    *daos.Dao
+	logger *zap.Logger
 
 	onAfterAccountCreated *hook.Hook[*AccountCreatedEvent]
 	onUnauthorizedAccess  *hook.Hook[*UnauthorizedAccessEvent]
@@ -43,6 +46,12 @@ func NewBaseApp(config BaseAppConfig) *BaseApp {
 }
 
 func (app *BaseApp) Bootstrap() error {
+	if logger, err := log.New(); err != nil {
+		return err
+	} else {
+		app.logger = logger
+	}
+
 	if err := app.initDatabase(); err != nil {
 		return err
 	}
@@ -56,6 +65,10 @@ func (app *BaseApp) IsDebug() bool {
 
 func (app *BaseApp) Dao() *daos.Dao {
 	return app.dao
+}
+
+func (app *BaseApp) Log() *zap.Logger {
+	return app.logger
 }
 
 func (app *BaseApp) DB() *pgxpool.Pool {

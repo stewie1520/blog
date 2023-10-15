@@ -39,8 +39,11 @@ func main() {
 	router, err := api.InitApi(app)
 	panicIfError(err)
 
-	docs.SwaggerInfo.BasePath = "/"
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	if !app.Config().IsProd() {
+		docs.SwaggerInfo.BasePath = "/"
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	}
+
 	router.Run(fmt.Sprintf(":%d", cfg.Port))
 }
 

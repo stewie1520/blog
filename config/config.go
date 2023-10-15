@@ -6,7 +6,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+// C is the global config.
+var C *Config
+
 type Config struct {
+	Env           string `mapstructure:"ENV"`
 	Port          int16  `mapstructure:"PORT"`
 	GrpcPort      int16  `mapstructure:"GRPC_PORT"`
 	ApiDomain     string `mapstructure:"API_DOMAIN"`
@@ -39,6 +43,10 @@ func (c *Config) Validate() error {
 	)
 }
 
+func (c *Config) IsProd() bool {
+	return c.Env == "production"
+}
+
 func Init() (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
@@ -59,6 +67,8 @@ func Init() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	C = config
 
 	return config, nil
 }

@@ -56,6 +56,7 @@ func (cmd *LoginCommand) Execute(ctx context.Context) (*TokensResponse, error) {
 	}
 
 	if ok := securities.CompareHashAndPassword(dbAccount.Password, cmd.Password); !ok {
+		cmd.app.Log().Info("Invalid credentials")
 		return nil, usecases.ErrInvalidCredentials
 	}
 
