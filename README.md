@@ -1,3 +1,5 @@
+![CI](https://github.com/stewie1520/blog/actions/workflows/go.yml/badge.svg)
+
 ## Getting Started 🎃
 
 ```sh
