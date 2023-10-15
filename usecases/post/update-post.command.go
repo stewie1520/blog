@@ -62,10 +62,14 @@ func (cmd *UpdatePostCommand) Execute(ctx context.Context) (*UpdatePostResponse,
 	}
 
 	dbPost.Content = cmd.Content
-	cmd.dao_post.UpdatePost(ctx, dao_post.UpdatePostParams{
+	err = cmd.dao_post.UpdatePost(ctx, dao_post.UpdatePostParams{
 		ID:      dbPost.ID,
 		Content: dbPost.Content,
 	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &UpdatePostResponse{&dbPost}, nil
 }

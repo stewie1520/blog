@@ -44,7 +44,8 @@ func main() {
 		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
 
-	router.Run(fmt.Sprintf(":%d", cfg.Port))
+	err = router.Run(fmt.Sprintf(":%d", cfg.Port))
+	panicIfError(err)
 }
 
 func panicIfError(err error) {

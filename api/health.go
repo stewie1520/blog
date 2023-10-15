@@ -13,7 +13,7 @@ type healthApi struct {
 
 type ReadinessResponse struct {
 	Healthy  bool   `json:"healthy"`
-	Database string `json:"database",omitempty` // won't be shown if empty
+	Database string `json:"database,omitempty"` // won't be shown if empty
 }
 
 type LivenessResponse struct {

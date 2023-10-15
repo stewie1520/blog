@@ -14,6 +14,7 @@ import (
 	"github.com/stewie1520/blog/tools/securities"
 	"github.com/stewie1520/blog/tools/types"
 	"github.com/stewie1520/blog/usecases"
+	"go.uber.org/zap"
 )
 
 var _ usecases.Command[*TokensResponse] = (*RegisterCommand)(nil)
@@ -61,7 +62,12 @@ func (cmd *RegisterCommand) Execute(ctx context.Context) (*TokensResponse, error
 		return nil, err
 	}
 
-	defer tx.Rollback(ctx)
+	defer func() {
+		err := tx.Rollback(ctx)
+		if err != nil {
+			cmd.app.Log().Info("Rollback error:", zap.Error(err))
+		}
+	}()
 
 	daoAccountTx := cmd.daoAccount.WithTx(tx)
 	daoUserTx := cmd.daoUser.WithTx(tx)
@@ -87,7 +93,10 @@ func (cmd *RegisterCommand) Execute(ctx context.Context) (*TokensResponse, error
 		return nil, err
 	}
 
-	tx.Commit(ctx)
+	err = tx.Commit(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return createTokens(cmd.app.Config(), dbUser.ID.String(), dbAccount.ID.String())
 }

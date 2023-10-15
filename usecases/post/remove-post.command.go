@@ -53,7 +53,12 @@ func (cmd *RemovePostCommand) Execute(ctx context.Context) (*RemovePostResponse,
 		return nil, usecases.ErrEntityForbidden
 	}
 
-	cmd.dao_post.RemovePost(ctx, dbPost.ID)
+	err = cmd.dao_post.RemovePost(ctx, dbPost.ID)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &RemovePostResponse{
 		ID: dbPost.ID,
 	}, nil

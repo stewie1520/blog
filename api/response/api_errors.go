@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-playground/validator/v10"
+	"github.com/stewie1520/blog/log"
+	"go.uber.org/zap"
 )
 
 type ApiError struct {
@@ -50,7 +52,10 @@ func (e *ApiError) WithResponseWriter(res http.ResponseWriter) {
 	res.Header().Add("Content-Type", "application/json")
 	result, _ := json.Marshal(e)
 
-	res.Write(result)
+	_, err := res.Write(result)
+	if err != nil {
+		log.L().Info("Error writing response:", zap.Error(err))
+	}
 }
 
 // NewBadRequestError creates and returns 400 `ApiError`.
