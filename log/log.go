@@ -5,6 +5,14 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+func L() *zap.Logger {
+	return zap.L()
+}
+
+func S() *zap.SugaredLogger {
+	return zap.S()
+}
+
 func New() (*zap.Logger, error) {
 	core, err := getCore()
 	if err != nil {

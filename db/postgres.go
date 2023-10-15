@@ -5,13 +5,13 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
-	"go.uber.org/zap"
+	"github.com/stewie1520/blog/log"
 )
 
 func NewPostgresDBX(connectionURL string, options ...Option) (*pgxpool.Pool, error) {
 	config, err := pgxpool.ParseConfig(connectionURL)
 	if err != nil {
-		zap.S().Errorf("Unable to parse connection pool config: %v\n", err)
+		log.S().Errorf("Unable to parse connection pool config: %v\n", err)
 		return nil, err
 	}
 
@@ -21,17 +21,17 @@ func NewPostgresDBX(connectionURL string, options ...Option) (*pgxpool.Pool, err
 
 	conn, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
-		zap.S().Errorf("Unable to create connection pool: %v\n", err)
+		log.S().Errorf("Unable to create connection pool: %v\n", err)
 		return nil, err
 	}
 
 	err = conn.Ping(context.Background())
 	if err != nil {
-		zap.S().Errorf("Unable to connect to database: %v\n", err)
+		log.S().Errorf("Unable to connect to database: %v\n", err)
 		return nil, err
 	}
 
-	zap.S().Info("Connected to database 🎉")
+	log.S().Info("Connected to database 🎉")
 
 	return conn, nil
 }

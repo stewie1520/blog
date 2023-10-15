@@ -18,7 +18,7 @@ func getFileRotateWriteSyncer() (zapcore.WriteSyncer, error) {
 		rotatelogs.WithRotationTime(time.Hour*24),
 	)
 
-	if !config.C.IsProd() {
+	if !config.C().IsProd() {
 		return zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(filewriter)), err
 	}
 

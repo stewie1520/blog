@@ -7,7 +7,11 @@ import (
 )
 
 // C is the global config.
-var C *Config
+var _c *Config
+
+func C() *Config {
+	return _c
+}
 
 type Config struct {
 	Env           string `mapstructure:"ENV"`
@@ -68,7 +72,7 @@ func Init() (*Config, error) {
 		return nil, err
 	}
 
-	C = config
+	_c = config
 
 	return config, nil
 }
