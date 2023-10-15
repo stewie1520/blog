@@ -59,7 +59,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/post": {
+        "/posts": {
             "get": {
                 "security": [
                     {
@@ -136,7 +136,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/post/{id}": {
+        "/posts/{id}": {
             "put": {
                 "security": [
                     {
@@ -215,7 +215,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/login": {
+        "/users/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -248,7 +248,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/me": {
+        "/users/me": {
             "get": {
                 "security": [
                     {
@@ -272,7 +272,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/register": {
+        "/users/register": {
             "post": {
                 "consumes": [
                     "application/json"

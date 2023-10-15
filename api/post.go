@@ -20,7 +20,7 @@ func bindPostApi(app core.App, ginEngine *gin.Engine) {
 		app: app,
 	}
 
-	subGroup := ginEngine.Group("/post")
+	subGroup := ginEngine.Group("/posts")
 	subGroup.Use(middleware.RequireAuth(app))
 	subGroup.POST("/", api.create)
 	subGroup.GET("/", api.list)
@@ -36,7 +36,7 @@ func bindPostApi(app core.App, ginEngine *gin.Engine) {
 // @Param payload body usecases_post.CreatePostCommand true "Create post payload"
 // @Success 200 {object} usecases_post.CreatePostResponse
 // @Security Authorization
-// @Router /post [post]
+// @Router /posts [post]
 func (api *postApi) create(c *gin.Context) {
 	cmd := usecases_post.NewCreatePostCommand(api.app)
 
@@ -63,7 +63,7 @@ func (api *postApi) create(c *gin.Context) {
 // @Param pagination query usecases_post.ListByUserQuery true "Pagination"
 // @Success 200 {object} types.Pagination[dao_post.Post]
 // @Security Authorization
-// @Router /post [get]
+// @Router /posts [get]
 func (api *postApi) list(c *gin.Context) {
 	q := usecases_post.NewListByUserQuery(api.app)
 
@@ -90,7 +90,7 @@ func (api *postApi) list(c *gin.Context) {
 // @Param id path string true "post id"
 // @Success 200 {object} usecases_post.UpdatePostResponse
 // @Security Authorization
-// @Router /post/{id} [put]
+// @Router /posts/{id} [put]
 func (api *postApi) update(c *gin.Context) {
 	cmd := usecases_post.NewUpdatePostCommand(api.app)
 
@@ -121,7 +121,7 @@ func (api *postApi) update(c *gin.Context) {
 // @Param id path string true "post id"
 // @Success 200 {object} usecases_post.RemovePostResponse
 // @Security Authorization
-// @Router /post/{id} [delete]
+// @Router /posts/{id} [delete]
 func (api *postApi) remove(c *gin.Context) {
 	cmd := usecases_post.NewRemovePostCommand(api.app)
 	if err := c.ShouldBindUri(cmd); err != nil {

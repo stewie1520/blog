@@ -51,7 +51,7 @@
                 }
             }
         },
-        "/post": {
+        "/posts": {
             "get": {
                 "security": [
                     {
@@ -128,7 +128,7 @@
                 }
             }
         },
-        "/post/{id}": {
+        "/posts/{id}": {
             "put": {
                 "security": [
                     {
@@ -207,7 +207,7 @@
                 }
             }
         },
-        "/user/login": {
+        "/users/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -240,7 +240,7 @@
                 }
             }
         },
-        "/user/me": {
+        "/users/me": {
             "get": {
                 "security": [
                     {
@@ -264,7 +264,7 @@
                 }
             }
         },
-        "/user/register": {
+        "/users/register": {
             "post": {
                 "consumes": [
                     "application/json"

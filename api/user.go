@@ -20,7 +20,7 @@ func bindUserApi(app core.App, ginEngine *gin.Engine) {
 		app: app,
 	}
 
-	subGroup := ginEngine.Group("/user")
+	subGroup := ginEngine.Group("/users")
 	subGroup.POST("/register", api.register)
 	subGroup.POST("/login", api.login)
 
@@ -36,7 +36,7 @@ func bindUserApi(app core.App, ginEngine *gin.Engine) {
 // @Produce json
 // @Param user body usecases_user.RegisterCommand true "Register payload"
 // @Success 200 {object} usecases_user.TokensResponse
-// @Router /user/register [post]
+// @Router /users/register [post]
 func (api *userApi) register(c *gin.Context) {
 	cmd := usecases_user.NewRegisterCommand(api.app)
 
@@ -59,7 +59,7 @@ func (api *userApi) register(c *gin.Context) {
 // @Produce json
 // @Param user body usecases_user.LoginCommand true "Login payload"
 // @Success 200 {object} usecases_user.TokensResponse
-// @Router /user/login [post]
+// @Router /users/login [post]
 func (api *userApi) login(c *gin.Context) {
 	cmd := usecases_user.NewLoginCommand(api.app)
 
@@ -89,7 +89,7 @@ func (api *userApi) login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /user/me [get]
+// @Router /users/me [get]
 // @Security Authorization
 func (apo *userApi) me(c *gin.Context) {
 	c.JSON(http.StatusOK, getUserFromContext(c))

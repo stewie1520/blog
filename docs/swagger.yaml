@@ -148,7 +148,7 @@ paths:
       summary: Check if application is ready to serve traffic
       tags:
       - health
-  /post:
+  /posts:
     get:
       consumes:
       - application/json
@@ -195,7 +195,7 @@ paths:
       summary: Create new post
       tags:
       - post
-  /post/{id}:
+  /posts/{id}:
     delete:
       consumes:
       - application/json
@@ -244,7 +244,7 @@ paths:
       summary: Update content of a post
       tags:
       - post
-  /user/login:
+  /users/login:
     post:
       consumes:
       - application/json
@@ -265,7 +265,7 @@ paths:
       summary: Login
       tags:
       - user
-  /user/me:
+  /users/me:
     get:
       consumes:
       - application/json
@@ -279,7 +279,7 @@ paths:
       summary: Get current user
       tags:
       - user
-  /user/register:
+  /users/register:
     post:
       consumes:
       - application/json
