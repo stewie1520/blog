@@ -9,6 +9,10 @@ type Pagination[T any] struct {
 }
 
 func NewPagination[T any](items []T, total int64, offset int64, limit int64) *Pagination[T] {
+	if items == nil {
+		items = []T{}
+	}
+
 	return &Pagination[T]{
 		Items:   items,
 		Total:   total,

@@ -12,7 +12,7 @@ import (
 )
 
 const countByUserId = `-- name: CountByUserId :one
-SELECT COUNT(*) FROM "posts" WHERE "posts"."user_id" = $1
+SELECT COUNT(*) FROM "posts" WHERE "posts"."user_id" = $1 AND "posts"."deleted_at" IS NULL
 `
 
 func (q *Queries) CountByUserId(ctx context.Context, userID uuid.UUID) (int64, error) {
@@ -47,7 +47,7 @@ func (q *Queries) Create(ctx context.Context, arg CreateParams) (Post, error) {
 }
 
 const findById = `-- name: FindById :one
-SELECT id, content, user_id, created_at, updated_at, deleted_at FROM "posts" WHERE "posts"."id" = $1 LIMIT 1
+SELECT id, content, user_id, created_at, updated_at, deleted_at FROM "posts" WHERE "posts"."id" = $1 AND "posts"."deleted_at" IS NULL LIMIT 1
 `
 
 func (q *Queries) FindById(ctx context.Context, id uuid.UUID) (Post, error) {
@@ -65,7 +65,7 @@ func (q *Queries) FindById(ctx context.Context, id uuid.UUID) (Post, error) {
 }
 
 const listByUserId = `-- name: ListByUserId :many
-SELECT id, content, user_id, created_at, updated_at, deleted_at FROM "posts" WHERE "posts"."user_id" = $1 ORDER BY "posts"."created_at" DESC LIMIT $2 OFFSET $3
+SELECT id, content, user_id, created_at, updated_at, deleted_at FROM "posts" WHERE "posts"."user_id" = $1 AND "posts"."deleted_at" IS NULL ORDER BY "posts"."created_at" DESC LIMIT $2 OFFSET $3
 `
 
 type ListByUserIdParams struct {
@@ -102,7 +102,7 @@ func (q *Queries) ListByUserId(ctx context.Context, arg ListByUserIdParams) ([]P
 }
 
 const removePost = `-- name: RemovePost :exec
-UPDATE "posts" SET "deleted_at" = now() WHERE "id" = $1
+UPDATE "posts" SET "deleted_at" = now() WHERE "id" = $1 AND "posts"."deleted_at" IS NULL
 `
 
 func (q *Queries) RemovePost(ctx context.Context, id uuid.UUID) error {
@@ -111,7 +111,7 @@ func (q *Queries) RemovePost(ctx context.Context, id uuid.UUID) error {
 }
 
 const updatePost = `-- name: UpdatePost :exec
-UPDATE "posts" SET "content" = $2, "updated_at" = now() WHERE "id" = $1
+UPDATE "posts" SET "content" = $2, "updated_at" = now() WHERE "id" = $1 AND "posts"."deleted_at" IS NULL
 `
 
 type UpdatePostParams struct {

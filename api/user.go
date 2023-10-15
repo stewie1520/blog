@@ -91,6 +91,13 @@ func (api *userApi) login(c *gin.Context) {
 // @Success 200
 // @Router /users/me [get]
 // @Security Authorization
-func (apo *userApi) me(c *gin.Context) {
-	c.JSON(http.StatusOK, getUserFromContext(c))
+func (api *userApi) me(c *gin.Context) {
+	q := usecases_user.NewGetUserQuery(api.app)
+	q.ID = getUserFromContext(c).ID.String()
+
+	if res, err := q.Execute(c); err != nil {
+		response.NewBadRequestError("", err).WithGin(c)
+	} else {
+		c.JSON(http.StatusCreated, res)
+	}
 }
